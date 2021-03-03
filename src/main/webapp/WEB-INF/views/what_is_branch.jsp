@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>git is fantastic</title>
+<title>Insert title here</title>
 </head>
 <body>
 
