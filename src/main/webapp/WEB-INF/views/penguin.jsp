@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>change the mouse.jsp</title>
+<title>Insert title here</title>
 </head>
 <body>
 
