@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>change01 the mouse.jsp</title>
+<title>what do you like kind of animal 11</title>
 </head>
 <body>
 
