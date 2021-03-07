@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<style>
+.uploadResult {width: 100%;background-color:gray;}
+.uploadResult ul {display:flex; flex-flow:row; justify-content: center; align-items: center;}
+.uploadResult ul li {list-style: none; padding: 10px;}
+.uploadResult ul li img {width: 20px;}
+</style>
+
 <html>
 <head>
 <meta http-euqiv="Content-Type" content="text/html;" charset="UTF-8">
@@ -14,6 +21,13 @@
 	</div>
 	
 	<button id="uploadBtn">Upload</button>
+	
+	<div class="uploadResult">
+	  <ul>
+	  </ul>
+	</div>
+	
+	<!-- HTML CUT LINE -->
 	
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
@@ -37,14 +51,14 @@
 			return true;
 		}
 		
+		var cloneObj = $('.uploadDiv').clone();
+		
 		$(uploadBtn).on('click', function(e){
 			var formData = new FormData();
-			
 			var inputFile = $("input[name='uploadFile']");
-			
 			var files = inputFile[0].files;
 			
-			console.log(files);
+			console.log('files : ', files);
 			
 			// add files to formdata
 			for (var i = 0; i < files.length; i++) {
@@ -52,22 +66,48 @@
 				if (!checkExtension(files[i].name, files[i].size)) {
 					return false;
 				}
-				
 				formData.append("uploadFile", files[i]);
 			}
 			
 			$.ajax({
-				url : '/uploadAjaxAction',
+				url			: '/uploadAjaxAction',
 				processData : false,
 				contentType : false,
-				data : formData,
-				type : 'POST',
-				success : function(data) {
-					alert("Uploaded");	
+				data		: formData,
+				type		: 'POST',
+				dataType	: "json",
+				success : function(result) {
+					// 요기까지는 그냥 서버에서만 저장을 한거지 브라우져에서는 뭔가 딱히 해준게 없다. 그래서 , 브라우져에게 데이터를 제공해 줄건데 ,
+					// 업로드된 파일의 이름과 원본 파일의 이름 , 파일이 저장된 경로, 업로드된 파일이 이미지 인지 아닌지 
+				
+					console.log('ajax result : ',result);
+					
+					showUploadedFile(result);
+					
+					$(".uploadDiv").html(cloneObj.html());
+					
 				}
 			});
 			
-		});
+		});// end click event 
+		
+		var uploadResult = $(".uploadResult ul");
+		
+		function showUploadedFile(uplaodResultArr) {
+			
+			var str = "";
+			
+			$(uplaodResultArr).each(function(i, obj){
+				
+				if (!uplaodResultArr.image) {
+					str += "<li><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></li>";
+				} else {
+					str += "<li>" + obj.fileName + "</li>";
+				}
+			});
+			
+			uploadResult.append(str);
+		}
 	}); // end ready
 	
 	
