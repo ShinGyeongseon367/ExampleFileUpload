@@ -159,11 +159,15 @@ public class UploadController {
 		ResponseEntity<byte[]> result = null;
 		
 		try {
+			// 피들러로 확인을 해보면 헤더에 image가 찍혀 있을 것이고 , filecopyutils에서 바이트 배열로 복사를 해서 전달하도록 합니다. 
 			HttpHeaders header = new HttpHeaders();
+			String contentType = Files.probeContentType(file.toPath());
+			header.add("Content-Type", contentType);		
 			
-			header.add("Content-Type", Files.probeContentType(file.toPath()));		
 			result = new ResponseEntity<byte[]>(FileCopyUtils.
 					copyToByteArray(file), HttpStatus.OK);
+			
+			log.info("Content-Type : " + contentType);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
