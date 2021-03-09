@@ -120,6 +120,7 @@ public class UploadController {
 				//check image type 
 				if (checkImageType(fileSave)) {
 					attFileDto.setImage(true);
+					attFileDto.setImageUri("/" + getDate() + "/s_" + uploadFileName); // 업로드 url생성
 					
 					FileOutputStream thumbrail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 					
@@ -133,7 +134,7 @@ public class UploadController {
 				e.getStackTrace();
 				log.error("filesave error : " + e);
 			}			
-		}
+		} // End for 
 		log.info("upload ajax");
 		
 		return new ResponseEntity<List<AttachFileDTO>>(list, HttpStatus.OK);
@@ -164,8 +165,11 @@ public class UploadController {
 			String contentType = Files.probeContentType(file.toPath());
 			header.add("Content-Type", contentType);		
 			
-			result = new ResponseEntity<byte[]>(FileCopyUtils.
-					copyToByteArray(file), HttpStatus.OK);
+//			result = new ResponseEntity<byte[]>(FileCopyUtils.
+//					copyToByteArray(file), HttpStatus.OK);
+//			위를 보면 ResponseEntity 파라미터가 2개가 들어갔지만 헤더까지 같이 넣어줘야한다. 
+			
+			result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 			
 			log.info("Content-Type : " + contentType);
 		} catch (IOException e) {
@@ -184,6 +188,16 @@ public class UploadController {
 		String str = sdf.format(date); // date 를 sdf에서 언급되어 있는 format으로 변환을 시킨다. 
 		
 		return str.replace("-", File.separator);
+	}
+	
+	private String getDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Date date = new Date();
+		
+		String str = sdf.format(date); // date 를 sdf에서 언급되어 있는 format으로 변환을 시킨다. 
+		
+		return str.replace("-", "/");
 	}
 	
 	// ajax로 호출은 반드시 브라우저만을 통해 들어오는 것이 아니므로 서버에서 확실히 확인할 필요가 있다. 

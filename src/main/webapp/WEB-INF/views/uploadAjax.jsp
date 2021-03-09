@@ -96,14 +96,17 @@
 		function showUploadedFile(uplaodResultArr) {
 			
 			var str = "";
-			
+			console.log('uplaodResultArr : ', uplaodResultArr);
 			$(uplaodResultArr).each(function(i, obj){
 				
-				if (!uplaodResultArr.image) {
+				if (!obj.image) {
 					str += "<li><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></li>";
 				} else {
-					str += "<li>" + obj.fileName + "</li>";
+					// str += "<li>" + obj.fileName + "</li>";
+					
+					str += "<li><img src='/display?fileName=" + obj.imageUri +"'></li>"
 				}
+				
 			});
 			
 			uploadResult.append(str);
