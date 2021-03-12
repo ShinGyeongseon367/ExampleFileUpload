@@ -9,5 +9,6 @@ public class AttachFileDTO {
 	private String uploadPath;
 	private String uuid;
 	private String imageUri;
+	private String fileExtends;
 	private boolean image;
 }

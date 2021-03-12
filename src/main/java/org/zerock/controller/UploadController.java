@@ -109,10 +109,12 @@ public class UploadController {
 				log.info("IE의 경우 해당" + e);
 			}
 			
+			attFileDto.setFileExtends(extendFile);
 			attFileDto.setFileName(uploadFileName);
 			UUID uuid = UUID.randomUUID();
 			
 			uploadFileName = uploadFileName + "_" + uuid + extendFile;
+			
 			log.info("only file name : " + uploadFileName);
 			
 			try {
@@ -130,7 +132,7 @@ public class UploadController {
 					
 					FileOutputStream thumbrail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 					
-					Thumbnailator.createThumbnail(file.getInputStream(), thumbrail, 100, 100);
+//					Thumbnailator.createThumbnail(file.getInputStream(), thumbrail, 100, 100);
 					
 					thumbrail.close();
 				}

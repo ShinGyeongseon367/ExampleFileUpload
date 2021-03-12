@@ -5,7 +5,7 @@
 .uploadResult {width: 100%;background-color:gray;}
 .uploadResult ul {display:flex; flex-flow:row; justify-content: center; align-items: center;}
 .uploadResult ul li {list-style: none; padding: 10px;}
-.uploadResult ul li img {width: 20px;}
+.uploadResult ul li img {width: 100px; height:100px;}
 </style>
 
 <html>
@@ -96,15 +96,19 @@
 		function showUploadedFile(uplaodResultArr) {
 			
 			var str = "";
+			var uploadPath = "";
+			
 			console.log('uplaodResultArr : ', uplaodResultArr);
 			$(uplaodResultArr).each(function(i, obj){
 				
+				uploadPath = obj.imageUri.replace("s_", "");
+				
 				if (!obj.image) {
-					str += "<li><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></li>";
+					str += "<li><a href='/download?fileName=" + uploadPath + "'><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></a></li>";
 				} else {
 					// str += "<li>" + obj.fileName + "</li>";
 					
-					str += "<li><img src='/display?fileName=" + obj.imageUri +"'></li>"
+					str += "<li><a href='/download?fileName=" + uploadPath + "'><img src='/display?fileName=" + obj.imageUri +"'></a></li>"
 				}
 				
 			});
