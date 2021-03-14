@@ -6,6 +6,30 @@
 .uploadResult ul {display:flex; flex-flow:row; justify-content: center; align-items: center;}
 .uploadResult ul li {list-style: none; padding: 10px;}
 .uploadResult ul li img {width: 100px; height:100px;}
+.uploadResult ul li span {color: white;}
+.bigPictureWrapper {
+  position: absolute;
+  display:none;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: gray;
+  z-index: 100;
+  background: rgba(255,255,255,0.5);
+}
+
+.bigPicture {
+  position: relativ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bigPicture img {
+  width: 600px;
+}
 </style>
 
 <html>
@@ -32,6 +56,15 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
 	<script type="text/javascript">
+	
+	function showImage(fileCallPath) {
+		// alert(fileClassPath);
+		
+		$(".bigPictureWrapper").css("display", "flex").show();
+		
+		$(".bigPicture").html("<img src='/display?fileName=" + encodeURI(fileCallPath) + "'>").animate({width: '100%', height: '100%'}, 1000);
+	}
+	
 	$(document).ready(function(){
 		
 		var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
@@ -89,7 +122,7 @@
 				}
 			});
 			
-		});// end click event 
+		}); // end click event
 		
 		var uploadResult = $(".uploadResult ul");
 		
@@ -104,20 +137,40 @@
 				uploadPath = obj.imageUri.replace("s_", "");
 				
 				if (!obj.image) {
+					var fileCallPath = encodeURIComponent(obj.uploadPath + '/' + obj.fileName + obj.uuid + obj.fileExtends);
 					str += "<li><a href='/download?fileName=" + uploadPath + "'><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></a></li>";
-				} else {
-					// str += "<li>" + obj.fileName + "</li>";
 					
-					str += "<li><a href='/download?fileName=" + uploadPath + "'><img src='/display?fileName=" + obj.imageUri +"'></a></li>"
+				} else {
+					// absolute path
+					var fileCallPath = encodeURIComponent(obj.uploadPath + '/s_' + obj.fileName + obj.uuid + obj.fileExtends);
+					
+					// exclude root path (c:\upload)
+					var originPath = obj.uploadPath.substr('c:\\upload'.length) + "\\" + obj.fileName + "_" + obj.uuid + obj.fileExtends;
+					originPath = originPath.replaceAll("\\", "/");
+					
+					
+					
+					console.log("originPath : ", originPath);
+					str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\"><img src='/display?fileName=" + obj.imageUri +"'></a></li>"
+							
 				}
-				
 			});
 			
 			uploadResult.append(str);
-		}
+			
+		}// end showUploadFile
 	}); // end ready
 	
 	
 	</script>
 </body>
+
+<!-- express big image -->
+<div class="bigPictureWrapper">
+  <div class="bigPicture">
+  </div>
+</div>
+<style>
+
+</style>
 </html>

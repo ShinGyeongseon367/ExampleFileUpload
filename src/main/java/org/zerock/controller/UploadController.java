@@ -132,7 +132,7 @@ public class UploadController {
 					
 					FileOutputStream thumbrail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 					
-//					Thumbnailator.createThumbnail(file.getInputStream(), thumbrail, 100, 100);
+					Thumbnailator.createThumbnail(file.getInputStream(), thumbrail, 100, 100);
 					
 					thumbrail.close();
 				}
@@ -205,9 +205,10 @@ public class UploadController {
 		
 		String resourceName = resource.getFilename();
 		
+		
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			
+
 			String downloadName = null;
 			
 			/* Trident가 IE 헤더에 포함되어 있는 사항인 것 같음, edge의 경우는 Edge라는 단어가 포함되어 있음. 
@@ -216,7 +217,6 @@ public class UploadController {
 			if (userAgent.contains("Trident")) {
 				log.info("IE Browser");
 				
-				log.info("IE encode str : " + URLEncoder.encode(resourceName, "UTF-8"));
 				downloadName = URLEncoder.encode(resourceName, "UTF-8").replaceAll("\\+", " ");
 				
 			} else if (userAgent.contains("Edge")) {
@@ -231,7 +231,7 @@ public class UploadController {
 				
 				downloadName = new String(resourceName.getBytes("UTF-8"), "ISO-8859-1");
 			}
-			
+			downloadName = downloadName.substring(downloadName.indexOf("_") + 1);
 			headers.add("Content-Disposition", "attachment; filename=" + downloadName);
 		}catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
