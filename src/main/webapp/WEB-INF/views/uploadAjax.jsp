@@ -118,11 +118,18 @@
 					showUploadedFile(result);
 					
 					$(".uploadDiv").html(cloneObj.html());
-					
+					deleteEvent();
 				}
 			});
 			
 		}); // end click event
+		
+		$(".bigPictureWrapper").on("click", function(e) {
+			$(".bigPicture").animate({width: '0%', height: '0%'}, 1000);
+			setTimeout(function() {
+				$(".bigPictureWrapper").hide();
+			}, 1000);
+		});
 		
 		var uploadResult = $(".uploadResult ul");
 		
@@ -138,20 +145,22 @@
 				
 				if (!obj.image) {
 					var fileCallPath = encodeURIComponent(obj.uploadPath + '/' + obj.fileName + obj.uuid + obj.fileExtends);
-					str += "<li><a href='/download?fileName=" + uploadPath + "'><img src='/resources/img/chumbu.png'>" + obj.fileName + "</img></a></li>";
+					str += "<li><div><a href='/download?fileName=" + uploadPath + "'><img src='/resources/img/chumbu.png'>" +
+							obj.fileName + "</img></a>";
+					str += "<span data-file='\'" + fileCallPath + "\' data-type='file'> x </span>" 
+					str += "</div></li>";
 					
 				} else {
 					// absolute path
-					var fileCallPath = encodeURIComponent(obj.uploadPath + '/s_' + obj.fileName + obj.uuid + obj.fileExtends);
+					var fileCallPath = encodeURIComponent(obj.uploadPath + '/s_' + obj.fileName + "_" + obj.uuid + obj.fileExtends);
 					
 					// exclude root path (c:\upload)
 					var originPath = obj.uploadPath.substr('c:\\upload'.length) + "\\" + obj.fileName + "_" + obj.uuid + obj.fileExtends;
 					originPath = originPath.replaceAll("\\", "/");
 					
-					
-					
 					console.log("originPath : ", originPath);
-					str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\"><img src='/display?fileName=" + obj.imageUri +"'></a></li>"
+					str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\"><img src='/display?fileName=" + obj.imageUri +"'></a>";
+					str += "<span style='cursor:pointer;' data-file=\'" + fileCallPath + "\' data-type='image'> x </span></li>";
 							
 				}
 			});
@@ -159,9 +168,26 @@
 			uploadResult.append(str);
 			
 		}// end showUploadFile
+		
+		
 	}); // end ready
 	
-	
+	function deleteEvent() {
+		$(".uploadResult li span").on('click', function(e) {
+			var targetFile = $(this).data("file");
+			var type = $(this).data("type");
+ 			
+			$.ajax({
+				url : "/deleteFile",
+				data : {fileName : targetFile, type: type},
+				dataType : "text",
+				type : "POST",
+				success : function(result) {
+					alert(result);	
+				}
+			}); 
+		});
+	}
 	</script>
 </body>
 

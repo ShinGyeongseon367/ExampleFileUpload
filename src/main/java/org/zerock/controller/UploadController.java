@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.Files;
@@ -238,6 +239,35 @@ public class UploadController {
 		}
 		
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+	
+	@PostMapping("/deleteFile")
+	@ResponseBody
+	public ResponseEntity<String> deleteFile(String fileName, String type) {
+		
+		log.info("deleteFile  : " + fileName);
+		
+		File file;
+		try {
+			file = new File(URLDecoder.decode(fileName, "UTF-8"));
+			
+			file.delete();
+			
+			// iamge일 경우 섬네일도 삭제를 해줘야하니 아래의 코드를 넣어준 것이다. 
+			if (type.equals("image")) {
+				String largeFileName = file.getAbsolutePath().replace("s_", "");
+				log.info("largeFilename : " + largeFileName);
+				file = new File(largeFileName);
+				
+				file.delete();
+				
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
 	
 	private String getFolder() {
